@@ -1,0 +1,66 @@
+.image-wrapper {
+  height: 50px;
+  width: 50px;
+  display: inline-block;
+}
+
+.card {
+  background-color: white;
+  border: 2px solid #ddd;
+  margin: 10px 0px;
+}
+.crypto-tag{
+  display: inline-block;
+}
+
+.card-img-top {
+  height: 50px;
+  width: 50px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 10px;
+}
+
+#main-container {
+  position: relative;
+}
+
+#searchDisplay {
+  max-height: 400px;
+  min-height: 0px;
+  width: 201px;
+  background-color: white;
+  position: absolute;
+  overflow: scroll;
+  top: 60px;
+  right: 32px;
+}
+.hidden{
+  display:none;
+}
+.visible{
+  display:block;
+}
+#searchDisplay ul {
+  list-style-type: none;
+  padding-left: 0px;
+}
+
+
+#searchDisplay li {
+  height: 40px;
+  vertical-align: center;
+  border: 2px solid #ddd;
+}
+
+#searchDisplay img {
+  height: 30px;
+  width: 30px;
+}
+#searchDisplay a {
+  text-decoration: none;
+  color: black;
+  padding:3px 3px;;
+  display: block;
+  height: %100;
+}
