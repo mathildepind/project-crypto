@@ -72,3 +72,16 @@
   display: block;
   height: %100;
 }
+.total-holdings{
+  float: right;
+}
+.holdings {
+  border: none;
+  text-align: right;
+  background-color: inherit;
+  display: inline;
+  font-family: inherit;
+  font-size: inherit;
+  padding: none;
+  width: 105px;
+}

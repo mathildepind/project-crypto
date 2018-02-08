@@ -60,6 +60,7 @@ window.onload = function(){
     let newCryptoFavourite = event.target.closest('a').textContent;
     if (!followedCryptos.includes(newCryptoFavourite)) {
       followedCryptos.push(newCryptoFavourite);
+      holdings[newCryptoFavourite]=0;
     }
     displayFavourites(followedCryptos);
     display.removeAttribute('class', 'visible');
@@ -73,7 +74,7 @@ window.onload = function(){
   function removeFromFollowedCryptos(event) {
     let target = event.target;
     if (target.getAttribute('class') !== 'closeSpan') return;
-    let toRemove = target.getAttribute('id');
+    let toRemove = target.closest('.card').getAttribute('id');
     let removeIndex = followedCryptos.indexOf(toRemove);
     followedCryptos.splice(removeIndex,1);
     displayFavourites(followedCryptos);
@@ -81,7 +82,22 @@ window.onload = function(){
 
   //
 
+  cards.addEventListener("focusout", updateCryptoHolding);
 
+  function updateCryptoHolding(event){
+    let target = event.target;
+    if (target.getAttribute('class') !== 'holdings') return;
+    let inputValue = target.getAttribute('valueAsNumber');
+    let card = target.closest('.card');
+    let cryptoName = card.getAttribute('id');
+    holdings[cryptoName] = inputValue;
+    //updateCard(card,cryptoName)
+  }
+
+  function updateCard(card,cryptoName) {
+    let totalHoldingsDisplay = card.closest('.total-holdings');
+    totalHoldingsDisplay.textContent = getTotalValue(cryptoName);
+  }
 
 
   fetch("https://min-api.cryptocompare.com/data/all/coinlist")
@@ -103,8 +119,9 @@ window.onload = function(){
       if(i!==firstPart.length-1 && (firstPart.length-1-i)%3===0) newFirstPart.push(',');
         newFirstPart.push(firstPart[i]);
     }
-    return newFirstPart.reverse().concat(totalArray[1]).join('')
+    return '£'+newFirstPart.reverse().concat(totalArray[1]).join('')
   }
+
 
   function displayFavourites (followedCryptos){
     let cryptosString= followedCryptos.join();
@@ -126,15 +143,16 @@ window.onload = function(){
       block.setAttribute('class','col-12 col-sm-3');
 
       let cryptoName = cryptoObj.Name;
+
       let priceInPounds = priceList[crypto]['GBP'];
       let holdingInThisCoin = holdings[crypto];
       let totalPrice= (holdings[crypto] * priceList[crypto]['GBP']).toFixed(2);
       totalPrice= makePricePretty(totalPrice)
 
       block.innerHTML = `
-          <div class="card">
+          <div class="card" id=${cryptoName}>
             <button type="button" class="close" aria-label="Close">
-              <span class="closeSpan" id=${cryptoName} aria-hidden="true">&times;</span>
+              <span class="closeSpan" aria-hidden="true">&times;</span>
             </button>
           <img class="card-img-top" src=https://www.cryptocompare.com${cryptoObj.ImageUrl} alt=${cryptoObj.CoinName}>
           <div class="card-body text-center">
@@ -142,8 +160,8 @@ window.onload = function(){
             <p class="card-text current-price">£${priceInPounds}</p>
           </div>
           <div class="card-footer">
-            <p class="card-text">Holding: <span class="holdings">${holdingInThisCoin} ${cryptoName}</span></p>
-            <p class="card-text">Total value: <span class="total-holdings">£${totalPrice}</span></p>
+            <p class="card-text">Holding: <input class="holdings" value=${holdingInThisCoin} type='number'> ${cryptoName}</p>
+            <p class="card-text">Total value: <span class="total-holdings">${totalPrice}</span></p>
           </div>
         </div>
       `
