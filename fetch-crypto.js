@@ -2,6 +2,7 @@ window.onload = function(){
   let followedCryptos = ['ETH','BTC'];
   let holdings ={'ETH':2304, 'BTC':10}
   let coinList = JSON.parse(localStorage.getItem('coinList')) || undefined;
+  let globalPriceList;
   let cryptoNamesArray = Object.keys(coinList);
   let fullNameToName= {}
   let cryptoFullNames = Object.keys(coinList).map(key => {
@@ -87,16 +88,20 @@ window.onload = function(){
   function updateCryptoHolding(event){
     let target = event.target;
     if (target.getAttribute('class') !== 'holdings') return;
-    let inputValue = target.getAttribute('valueAsNumber');
+    let inputValue = target.valueAsNumber;
     let card = target.closest('.card');
     let cryptoName = card.getAttribute('id');
     holdings[cryptoName] = inputValue;
-    //updateCard(card,cryptoName)
+    updateCard(card,cryptoName)
   }
 
   function updateCard(card,cryptoName) {
-    let totalHoldingsDisplay = card.closest('.total-holdings');
-    totalHoldingsDisplay.textContent = getTotalValue(cryptoName);
+    let totalHoldingsDisplay = card.getElementsByClassName('total-holdings')[0];
+    let priceInPounds = globalPriceList[cryptoName]['GBP'];
+    let holdingInThisCoin = holdings[cryptoName];
+    let totalPrice= (holdings[cryptoName] * globalPriceList[cryptoName]['GBP']).toFixed(2);
+    totalPrice= makePricePretty(totalPrice)
+    totalHoldingsDisplay.textContent = totalPrice;
   }
 
 
@@ -135,6 +140,7 @@ window.onload = function(){
     })
 
     function createCardsAndAppend(priceList){
+      globalPriceList=priceList;
     cards.innerHTML="";
     followedCryptos.forEach(crypto =>{
       let cryptoObj= coinList[crypto];
@@ -144,9 +150,9 @@ window.onload = function(){
 
       let cryptoName = cryptoObj.Name;
 
-      let priceInPounds = priceList[crypto]['GBP'];
+      let priceInPounds = globalPriceList[crypto]['GBP'];
       let holdingInThisCoin = holdings[crypto];
-      let totalPrice= (holdings[crypto] * priceList[crypto]['GBP']).toFixed(2);
+      let totalPrice= (holdings[crypto] * globalPriceList[crypto]['GBP']).toFixed(2);
       totalPrice= makePricePretty(totalPrice)
 
       block.innerHTML = `
